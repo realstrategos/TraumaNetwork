@@ -32,6 +32,7 @@ namespace TraumaNetwork
             modelBuilder.Entity<Category>().Property(x => x.ID).HasDefaultValueSql("newid()");
             modelBuilder.Entity<FinancialPlan>().Property(x => x.ID).HasDefaultValueSql("newid()");
             modelBuilder.Entity<Service>().Property(x => x.ID).HasDefaultValueSql("newid()");
+            modelBuilder.Entity<Specialty>().Property(x => x.ID).HasDefaultValueSql("newid()");
             modelBuilder.Entity<AgeGroup>().Property(x => x.ID).HasDefaultValueSql("newid()");
             modelBuilder.Entity<AgencyLocation>().Property(x => x.ID).HasDefaultValueSql("newid()");
         }

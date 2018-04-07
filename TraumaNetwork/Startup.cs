@@ -29,12 +29,25 @@ namespace TraumaNetwork
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
+
+            
+        }
+
+        private static void InitializeMigrations(IApplicationBuilder app)
+        {
+            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                using (TraumaContext context = serviceScope.ServiceProvider.GetRequiredService<TraumaContext>())
+                {
+                    context.Database.Migrate();
+                }
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-
+            InitializeMigrations(app);
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
