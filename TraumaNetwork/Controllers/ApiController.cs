@@ -79,6 +79,7 @@ namespace TraumaNetwork.Controllers
         public IEnumerable<Agency> Agencies(Guid? categoryID = null, Guid? serviceID = null, Guid? financialplanID = null, Guid? specialtyID = null)
         {
             var query = _context.Agencies.AsQueryable();
+            var temp = query.Include(x => x.Categories);
             if (categoryID.HasValue)
             {
                 query = query.Where(x => x.Categories.Any(z => z.CategoryID == categoryID));
@@ -95,7 +96,7 @@ namespace TraumaNetwork.Controllers
             {
                 query = query.Where(x => x.Specialties.Any(z => z.SpecialtyID == specialtyID));
             }
-            return query.Include(x=> x.Locations).ToList();
+            return query.Include(x => x.Locations).ToList();
         }
     }
 }

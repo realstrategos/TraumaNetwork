@@ -35,35 +35,41 @@ export class Home extends React.Component<RouteComponentProps<{}>, any> {
             loading: true,
             ageGroupsOpen: false,
             categoriesOpen: false,
-            categories: [
-                { id: '5', name: 'Counseling / Psychotherapy for Health' },
-                { id: '6', name: 'Counseling / Psychotherapy for Substance Usage' },
-                { id: '7', name: 'Support Addressing Physical, Sexual, or Emotional Abuse' },
-            ],
-            ageGroups: [
-                { id: '1', name: 'Preschool', order: 1 },
-                { id: '2', name: 'School Aged', order: 2 },
-                { id: '3', name: 'Teen', order: 3 },
-                { id: '4', name: 'Adult', order: 4 },
-            ],
-            services: [
-                { id: '1', name: 'Preschool', order: 1 },
-                { id: '2', name: 'School Aged', order: 2 },
-                { id: '3', name: 'Teen', order: 3 },
-                { id: '4', name: 'Adult', order: 4 },
-            ],
+            categories: [],
+            ageGroups: [],
+            services: [],
+            specialties: [],
+            financials: [],
+            results: [],
             step: 0,
         };
-
-        fetch('api/services')
-            .then(response => response.json() as Promise<Service[]>)
-            .then(data => {
-                this.setState({ services: data, loading: false }); // services: data,
-            });
         fetch('api/categories')
             .then(response => response.json() as Promise<Orderable[]>)
             .then(data => {
                 this.setState({ categories: data, loading: false }); // services: data,
+            });
+    }
+
+    categorySelected(category: Orderable) {
+        fetch(`api/agegroups?categoryID=${category.id}`)
+            .then(response => response.json() as Promise<Service[]>)
+            .then(data => {
+                this.setState({ ageGroups: data, loading: false }); // services: data,
+            });
+        fetch(`api/services?categoryID=${category.id}`)
+            .then(response => response.json() as Promise<Orderable[]>)
+            .then(data => {
+                this.setState({ services: data, loading: false }); // services: data,
+            });
+        fetch(`api/specialties?categoryID=${category.id}`)
+            .then(response => response.json() as Promise<Orderable[]>)
+            .then(data => {
+                this.setState({ specialties: data, loading: false }); // services: data,
+            });
+        fetch(`api/financialplans?categoryID=${category.id}`)
+            .then(response => response.json() as Promise<Orderable[]>)
+            .then(data => {
+                this.setState({ financials: data, loading: false }); // services: data,
             });
     }
 
@@ -98,7 +104,7 @@ export class Home extends React.Component<RouteComponentProps<{}>, any> {
             case 1:
                 return this.renderAgeGroups(this.state.ageGroups);
             case 2:
-            // return this.renderServiceCategories(this.state.ageGroups);
+            return this.renderResults();
         }
     }
 
@@ -106,8 +112,32 @@ export class Home extends React.Component<RouteComponentProps<{}>, any> {
         if (step > 0) {
             return <div>
                 <button onClick={() => this.setState({ step: step - 1 })}>Go Back</button>
+                {step === 1 ? <button onClick={() => this.executeSearch()}>Search</button> : null}
             </div>
         }
+    }
+
+    executeSearch() {
+        const { filterInfo } = this.state;
+        this.setState({ step: 2, loadingTable: true });
+        fetch(`api/agencies?categoryID=${filterInfo.category.id}${this.getServiceID()}${this.getFinancialID()}${this.getSpecialtyID()}`)
+            .then(response => response.json() as Promise<Orderable[]>)
+            .then(data => {
+                this.setState({ results: data, loadingTable: false }); // services: data,
+            });
+    }
+
+    getServiceID() {
+        const { filterInfo } = this.state;        
+        return `${filterInfo.service && filterInfo.service.id ? `&serviceID=${filterInfo.service.id}` : ''}`
+    }
+    getFinancialID() {
+        const { filterInfo } = this.state;        
+        return `${filterInfo.financial && filterInfo.financial.id ? `&financialplanID=${filterInfo.financial.id}` : ''}`
+    }
+    getSpecialtyID() {
+        const { filterInfo } = this.state;        
+        return `${filterInfo.specialty && filterInfo.specialty.id ? `&specialtyID=${filterInfo.specialty.id}` : ''}`
     }
 
 
@@ -122,6 +152,7 @@ export class Home extends React.Component<RouteComponentProps<{}>, any> {
                         }
                 });
                 this.setState({ step: 1 });
+                this.categorySelected(x);
             }}>{x.name}</button>)}
         </div>;
     }
@@ -138,6 +169,7 @@ export class Home extends React.Component<RouteComponentProps<{}>, any> {
                         }
                 })}
                 items={this.state.ageGroups}
+                title="Age Group"
             />
             <Dropdown
                 selectedItem={this.state.filterInfo.service || {}}
@@ -149,33 +181,60 @@ export class Home extends React.Component<RouteComponentProps<{}>, any> {
                         }
                 })}
                 items={this.state.services}
-            />
-            {/* <Dropdown
-                selectedItem={filterInfo.ageGroup || {}}
-                selectItem={(item: Orderable) => filterInfo.ageGroup = item}
-                items={this.state.ageGroups}
+                title="Services"
             />
             <Dropdown
-                selectedItem={filterInfo.ageGroup || {}}
-                selectItem={(item: Orderable) => filterInfo.ageGroup = item}
-                items={this.state.ageGroups}
-            />
-            <Dropdown
-                selectedItem={filterInfo.ageGroup || {}}
-                selectItem={(item: Orderable) => filterInfo.ageGroup = item}
-                items={this.state.ageGroups}
-            /> */}
-            {ageGroups.map(x => <button key={x.id} onClick={() => {
-                this.setState({
+                selectedItem={this.state.filterInfo.specialty || {}}
+                selectItem={(item: Orderable) => this.setState({
                     filterInfo:
                         {
                             ...this.state.filterInfo,
-                            ageGroup: x,
+                            specialty: item,
                         }
-                });
-                debugger;
-                this.setState({ step: 2 });
-            }}>{x.name}</button>)}
+                })}
+                items={this.state.specialties}
+                title="Specialties"
+            />
+            <Dropdown
+                selectedItem={this.state.filterInfo.financial || {}}
+                selectItem={(item: Orderable) => this.setState({
+                    filterInfo:
+                        {
+                            ...this.state.filterInfo,
+                            financial: item,
+                        }
+                })}
+                items={this.state.financials}
+                title="Finance Options"
+            />
+        </div>;
+    }
+
+    renderResults() {
+        const { results, loadingTable } = this.state;        
+        if (loadingTable) {
+            return <div><p><em>Loading Results...</em></p></div>
+        }
+        return <div>
+            <table className='table'>
+            <thead>
+                <tr>
+                    <th>Agency Name</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>Website</th>
+                </tr>
+            </thead>
+            <tbody>
+            {results.map(agency =>
+                <tr key={ agency.name }>
+                    <td>{ agency.phone }</td>
+                    <td>{ agency.email }</td>
+                    <td>{ agency.website }</td>
+                </tr>
+            )}
+            </tbody>
+        </table>
         </div>;
     }
 }

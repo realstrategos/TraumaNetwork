@@ -9,6 +9,7 @@ export interface Props {
     selectItem: Function;
     selectedItem: any;
     items: any[];
+    title: string,
 }
 
 export class Dropdown extends React.Component<Props, CounterState> {
@@ -27,7 +28,10 @@ export class Dropdown extends React.Component<Props, CounterState> {
             )
         });
 
+        options.unshift((<option key='asdf'></option>))
+
         return <div>
+            <span>{this.props.title}</span>
             <select id={this.props.selectedItem.id} 
                     className='form-control'
                     value={this.props.selectedItem.id}
