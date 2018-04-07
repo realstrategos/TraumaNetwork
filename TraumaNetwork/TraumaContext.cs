@@ -5,8 +5,9 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using TraumaNetwork;
 
-namespace TraumaNetwork.Models
+namespace TraumaNetwork
 {
     public class TraumaContext : DbContext
     {
@@ -27,15 +28,26 @@ namespace TraumaNetwork.Models
             modelBuilder.Entity<AgencyFinancialPlan>()
                 .HasKey(x => new { x.AgencyID, x.FinancialID });
 
+            modelBuilder.Entity<Agency>().Property(x => x.ID).HasDefaultValueSql("newid()");
+            modelBuilder.Entity<Category>().Property(x => x.ID).HasDefaultValueSql("newid()");
+            modelBuilder.Entity<FinancialPlan>().Property(x => x.ID).HasDefaultValueSql("newid()");
+            modelBuilder.Entity<Service>().Property(x => x.ID).HasDefaultValueSql("newid()");
+            modelBuilder.Entity<AgeGroup>().Property(x => x.ID).HasDefaultValueSql("newid()");
+            modelBuilder.Entity<AgencyLocation>().Property(x => x.ID).HasDefaultValueSql("newid()");
         }
 
         public DbSet<Agency> Agencies { get; set; }
+
+        public DbSet<TraumaNetwork.Category> Category { get; set; }
     }
 
     public class Agency
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid ID { get; set; }
+
+        public string Name { get; set; }
+
         public List<AgencyCategory> Categories { get; set; }
         public List<AgencyLocation> Locations { get; set; }
         public List<AgencyAgeGroup> AgeGroups { get; set; }
@@ -58,35 +70,35 @@ namespace TraumaNetwork.Models
 
     public class Category : IFilterable
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid ID { get; set; }
         public string Name { get; set; }
         public int Order { get; set; }
     }
     public class AgeGroup : IFilterable
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid ID { get; set; }
         public string Name { get; set; }
         public int Order { get; set; }
     }
     public class Service : IFilterable
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid ID { get; set; }
         public string Name { get; set; }
         public int Order { get; set; }
     }
     public class Specialty : IFilterable
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid ID { get; set; }
         public string Name { get; set; }
         public int Order { get; set; }
     }
     public class FinancialPlan : IFilterable
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid ID { get; set; }
         public string Name { get; set; }
         public int Order { get; set; }
@@ -146,7 +158,7 @@ namespace TraumaNetwork.Models
     }
     public class AgencyLocation
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid ID { get; set; }
 
         public string Address1 { get; set; }

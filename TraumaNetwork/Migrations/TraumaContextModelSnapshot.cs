@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
 using System;
-using TraumaNetwork.Models;
+using TraumaNetwork;
 
 namespace TraumaNetwork.Migrations
 {
@@ -20,10 +20,11 @@ namespace TraumaNetwork.Migrations
                 .HasAnnotation("ProductVersion", "2.0.2-rtm-10011")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("TraumaNetwork.Models.AgeGroup", b =>
+            modelBuilder.Entity("TraumaNetwork.AgeGroup", b =>
                 {
                     b.Property<Guid>("ID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("newid()");
 
                     b.Property<string>("Name");
 
@@ -34,12 +35,15 @@ namespace TraumaNetwork.Migrations
                     b.ToTable("AgeGroup");
                 });
 
-            modelBuilder.Entity("TraumaNetwork.Models.Agency", b =>
+            modelBuilder.Entity("TraumaNetwork.Agency", b =>
                 {
                     b.Property<Guid>("ID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("newid()");
 
                     b.Property<string>("Email");
+
+                    b.Property<string>("Name");
 
                     b.Property<string>("Phone");
 
@@ -50,7 +54,7 @@ namespace TraumaNetwork.Migrations
                     b.ToTable("Agencies");
                 });
 
-            modelBuilder.Entity("TraumaNetwork.Models.AgencyAgeGroup", b =>
+            modelBuilder.Entity("TraumaNetwork.AgencyAgeGroup", b =>
                 {
                     b.Property<Guid>("AgencyID");
 
@@ -63,7 +67,7 @@ namespace TraumaNetwork.Migrations
                     b.ToTable("AgencyAgeGroup");
                 });
 
-            modelBuilder.Entity("TraumaNetwork.Models.AgencyCategory", b =>
+            modelBuilder.Entity("TraumaNetwork.AgencyCategory", b =>
                 {
                     b.Property<Guid>("AgencyID");
 
@@ -76,7 +80,7 @@ namespace TraumaNetwork.Migrations
                     b.ToTable("AgencyCategory");
                 });
 
-            modelBuilder.Entity("TraumaNetwork.Models.AgencyFinancialPlan", b =>
+            modelBuilder.Entity("TraumaNetwork.AgencyFinancialPlan", b =>
                 {
                     b.Property<Guid>("AgencyID");
 
@@ -89,10 +93,11 @@ namespace TraumaNetwork.Migrations
                     b.ToTable("AgencyFinancialPlan");
                 });
 
-            modelBuilder.Entity("TraumaNetwork.Models.AgencyLocation", b =>
+            modelBuilder.Entity("TraumaNetwork.AgencyLocation", b =>
                 {
                     b.Property<Guid>("ID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("newid()");
 
                     b.Property<string>("Address1");
 
@@ -113,7 +118,7 @@ namespace TraumaNetwork.Migrations
                     b.ToTable("AgencyLocation");
                 });
 
-            modelBuilder.Entity("TraumaNetwork.Models.AgencyService", b =>
+            modelBuilder.Entity("TraumaNetwork.AgencyService", b =>
                 {
                     b.Property<Guid>("AgencyID");
 
@@ -128,7 +133,7 @@ namespace TraumaNetwork.Migrations
                     b.ToTable("AgencyService");
                 });
 
-            modelBuilder.Entity("TraumaNetwork.Models.AgencySpecialty", b =>
+            modelBuilder.Entity("TraumaNetwork.AgencySpecialty", b =>
                 {
                     b.Property<Guid>("AgencyID");
 
@@ -141,10 +146,11 @@ namespace TraumaNetwork.Migrations
                     b.ToTable("AgencySpecialty");
                 });
 
-            modelBuilder.Entity("TraumaNetwork.Models.Category", b =>
+            modelBuilder.Entity("TraumaNetwork.Category", b =>
                 {
                     b.Property<Guid>("ID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("newid()");
 
                     b.Property<string>("Name");
 
@@ -155,10 +161,11 @@ namespace TraumaNetwork.Migrations
                     b.ToTable("Category");
                 });
 
-            modelBuilder.Entity("TraumaNetwork.Models.FinancialPlan", b =>
+            modelBuilder.Entity("TraumaNetwork.FinancialPlan", b =>
                 {
                     b.Property<Guid>("ID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("newid()");
 
                     b.Property<string>("Name");
 
@@ -169,10 +176,11 @@ namespace TraumaNetwork.Migrations
                     b.ToTable("FinancialPlan");
                 });
 
-            modelBuilder.Entity("TraumaNetwork.Models.Service", b =>
+            modelBuilder.Entity("TraumaNetwork.Service", b =>
                 {
                     b.Property<Guid>("ID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("newid()");
 
                     b.Property<string>("Name");
 
@@ -183,7 +191,7 @@ namespace TraumaNetwork.Migrations
                     b.ToTable("Service");
                 });
 
-            modelBuilder.Entity("TraumaNetwork.Models.Specialty", b =>
+            modelBuilder.Entity("TraumaNetwork.Specialty", b =>
                 {
                     b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd();
@@ -197,74 +205,74 @@ namespace TraumaNetwork.Migrations
                     b.ToTable("Specialty");
                 });
 
-            modelBuilder.Entity("TraumaNetwork.Models.AgencyAgeGroup", b =>
+            modelBuilder.Entity("TraumaNetwork.AgencyAgeGroup", b =>
                 {
-                    b.HasOne("TraumaNetwork.Models.AgeGroup", "AgeGroup")
+                    b.HasOne("TraumaNetwork.AgeGroup", "AgeGroup")
                         .WithMany()
                         .HasForeignKey("AgeGroupID")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("TraumaNetwork.Models.Agency", "Agency")
+                    b.HasOne("TraumaNetwork.Agency", "Agency")
                         .WithMany("AgeGroups")
                         .HasForeignKey("AgencyID")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("TraumaNetwork.Models.AgencyCategory", b =>
+            modelBuilder.Entity("TraumaNetwork.AgencyCategory", b =>
                 {
-                    b.HasOne("TraumaNetwork.Models.Agency", "Agency")
+                    b.HasOne("TraumaNetwork.Agency", "Agency")
                         .WithMany("Categories")
                         .HasForeignKey("AgencyID")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("TraumaNetwork.Models.Category", "Category")
+                    b.HasOne("TraumaNetwork.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryID")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("TraumaNetwork.Models.AgencyFinancialPlan", b =>
+            modelBuilder.Entity("TraumaNetwork.AgencyFinancialPlan", b =>
                 {
-                    b.HasOne("TraumaNetwork.Models.Agency", "Agency")
+                    b.HasOne("TraumaNetwork.Agency", "Agency")
                         .WithMany("FinancialPlans")
                         .HasForeignKey("AgencyID")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("TraumaNetwork.Models.FinancialPlan", "Financial")
+                    b.HasOne("TraumaNetwork.FinancialPlan", "Financial")
                         .WithMany()
                         .HasForeignKey("FinancialID")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("TraumaNetwork.Models.AgencyLocation", b =>
+            modelBuilder.Entity("TraumaNetwork.AgencyLocation", b =>
                 {
-                    b.HasOne("TraumaNetwork.Models.Agency", "Agency")
+                    b.HasOne("TraumaNetwork.Agency", "Agency")
                         .WithMany("Locations")
                         .HasForeignKey("AgencyID")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("TraumaNetwork.Models.AgencyService", b =>
+            modelBuilder.Entity("TraumaNetwork.AgencyService", b =>
                 {
-                    b.HasOne("TraumaNetwork.Models.Agency", "Agency")
+                    b.HasOne("TraumaNetwork.Agency", "Agency")
                         .WithMany("Services")
                         .HasForeignKey("AgencyID")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("TraumaNetwork.Models.Service", "Service")
+                    b.HasOne("TraumaNetwork.Service", "Service")
                         .WithMany()
                         .HasForeignKey("ServiceID")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("TraumaNetwork.Models.AgencySpecialty", b =>
+            modelBuilder.Entity("TraumaNetwork.AgencySpecialty", b =>
                 {
-                    b.HasOne("TraumaNetwork.Models.Agency", "Agency")
+                    b.HasOne("TraumaNetwork.Agency", "Agency")
                         .WithMany("Specialties")
                         .HasForeignKey("AgencyID")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("TraumaNetwork.Models.Specialty", "Specialty")
+                    b.HasOne("TraumaNetwork.Specialty", "Specialty")
                         .WithMany()
                         .HasForeignKey("SpecialtyID")
                         .OnDelete(DeleteBehavior.Cascade);
