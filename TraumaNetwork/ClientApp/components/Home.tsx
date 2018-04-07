@@ -2,13 +2,17 @@ import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 import 'isomorphic-fetch';
 import { Link, NavLink } from 'react-router-dom';
-
-let filterInfo: FilterInfo;
+import { Dropdown } from './Dropdown';
 
 interface FetchDataExampleState {
     loading: boolean;
     services: Service[];
+    ageGroups: Orderable[];
+    ageGroupsOpen: boolean,
+    categoriesOpen: boolean,
+    categories: Orderable[];
     step: number;
+    filterInfo: FilterInfo;
 }
 
 interface Service {
@@ -18,25 +22,42 @@ interface Service {
 
 interface FilterInfo {
     service: Service;
+    ageGroup: Orderable;
 }
 
-export class Home extends React.Component<RouteComponentProps<{}>, FetchDataExampleState> {
+export class Home extends React.Component<RouteComponentProps<{}>, any> {
     constructor() {
         super();
-        this.state = { 
-            loading: true, 
+        var info = {};
+        // this.toggle = this.toggle.bind(this);
+        this.state = {
+            loading: true,
+            ageGroupsOpen: false,
+            categoriesOpen: false,
             services: [
-            { id: '1', name: 'Counseling / Psychotherapy for Health'},
-            { id: '2', name: 'Counseling / Psychotherapy for Substance Usage'},
-            { id: '3', name: 'Support Addressing Physical, Sexual, or Emotional Abuse'},
-            ], 
-            step: 0, 
+            { id: '5', name: 'Counseling / Psychotherapy for Health'},
+            { id: '6', name: 'Counseling / Psychotherapy for Substance Usage'},
+            { id: '7', name: 'Support Addressing Physical, Sexual, or Emotional Abuse'},
+            ],
+            ageGroups: [
+                { id: '1', name: 'Preschool', order: 1},
+                { id: '2', name: 'School Aged', order: 2},
+                { id: '3', name: 'Teen', order: 3},
+                { id: '4', name: 'Adult', order: 4},
+            ],
+            categories: [
+                { id: '1', name: 'Preschool', order: 1},
+                { id: '2', name: 'School Aged', order: 2},
+                { id: '3', name: 'Teen', order: 3},
+                { id: '4', name: 'Adult', order: 4},
+            ],
+            step: 0,
         };
 
         fetch('api/SampleData/WeatherForecasts')
             .then(response => response.json() as Promise<Service[]>)
             .then(data => {
-                this.setState({ services: data, loading: false });
+                this.setState({ loading: false }); // services: data,
             });
     }
 
@@ -45,16 +66,96 @@ export class Home extends React.Component<RouteComponentProps<{}>, FetchDataExam
             <h1>What Service Are You Seeking?</h1>
             {this.state.loading
             ? <p><em>Loading...</em></p>
-            : this.renderForecastsTable(this.state.services)}
+            : this.renderWorkflowStep(this.state.step)}
+            {this.state.loading
+            ? null
+            : this.renderWorkflowArrows(this.state.step)}
         </div>;
+    }
+
+    toggleAgeGroups() {
+        this.setState({
+            ageGroupsOpen: !this.state.ageGroupsOpen,
+        });
+    }
+
+    toggleServiceCategories() {
+        this.setState({
+            categoriesOpen: !this.state.categoriesOpen,
+        });
+    }
+
+    renderWorkflowStep(step: number) {
+        switch (step) {
+            case 0:
+                return this.renderServiceList(this.state.services);
+            case 1:
+                return this.renderAgeGroups(this.state.ageGroups);
+            case 2:
+                // return this.renderServiceCategories(this.state.ageGroups);
+        }
+    }
+
+    renderWorkflowArrows(step: number) {
+        if (step > 0) {
+            return <div>
+                <button onClick={() => this.setState({ step: step - 1})}>Go Back</button>
+            </div>
+        }
     }
     
 
-    renderForecastsTable(services: Service[]) {
+    renderServiceList(services: Service[]) {
         return <div>
-            {services.map(x => <button onClick={() => {
-                filterInfo.service = x;
-                this.setState({step: 1});
+            {services.map(x => <button key={x.id} onClick={() => {
+                this.setState({filterInfo:
+                {
+                    ...this.state.filterInfo,
+                    service: x,
+                }});
+                this.setState({ step: 1 });
+            }}>{x.name}</button>)}
+        </div>;
+    }
+
+    renderAgeGroups(ageGroups: Orderable[]) {
+        return <div>
+            <Dropdown
+                selectedItem={this.state.filterInfo.ageGroup || {}}
+                selectItem={(item: Orderable) => this.state.filterInfo.ageGroup = item}
+                items={this.state.ageGroups}
+            />
+            <Dropdown
+                selectedItem={this.state.filterInfo.service || {}}
+                selectItem={(item: Service) => {
+                    debugger;
+                    this.state.filterInfo.service = item;
+                }}
+                items={this.state.services}
+            />
+            {/* <Dropdown
+                selectedItem={filterInfo.ageGroup || {}}
+                selectItem={(item: Orderable) => filterInfo.ageGroup = item}
+                items={this.state.ageGroups}
+            />
+            <Dropdown
+                selectedItem={filterInfo.ageGroup || {}}
+                selectItem={(item: Orderable) => filterInfo.ageGroup = item}
+                items={this.state.ageGroups}
+            />
+            <Dropdown
+                selectedItem={filterInfo.ageGroup || {}}
+                selectItem={(item: Orderable) => filterInfo.ageGroup = item}
+                items={this.state.ageGroups}
+            /> */}
+            {ageGroups.map(x => <button key={x.id} onClick={() => {
+                this.setState({filterInfo:
+                {
+                    ...this.state.filterInfo,
+                    ageGroup: x,
+                }});
+                debugger;
+                this.setState({ step: 2 });
             }}>{x.name}</button>)}
         </div>;
     }
@@ -65,4 +166,10 @@ interface WeatherForecast {
     temperatureC: number;
     temperatureF: number;
     summary: string;
+}
+
+export interface Orderable {
+    id: string,
+    name: string,
+    order: number,
 }
