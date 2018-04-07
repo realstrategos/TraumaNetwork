@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace TraumaNetwork.Controllers
 {
@@ -70,6 +71,31 @@ namespace TraumaNetwork.Controllers
                 query = query.Where(x => x.Agencies.Any(y => y.Agency.Categories.Any(z => z.CategoryID == categoryID)));
             }
             return query.ToList();
+        }
+
+
+        [HttpGet]
+        [Route("agencies")]
+        public IEnumerable<Agency> Agencies(Guid? categoryID = null, Guid? serviceID = null, Guid? financialplanID = null, Guid? specialtyID = null)
+        {
+            var query = _context.Agencies.AsQueryable();
+            if (categoryID.HasValue)
+            {
+                query = query.Where(x => x.Categories.Any(z => z.CategoryID == categoryID));
+            }
+            if (serviceID.HasValue)
+            {
+                query = query.Where(x => x.Services.Any(z => z.ServiceID == serviceID));
+            }
+            if (financialplanID.HasValue)
+            {
+                query = query.Where(x => x.FinancialPlans.Any(z => z.FinancialID == financialplanID));
+            }
+            if (specialtyID.HasValue)
+            {
+                query = query.Where(x => x.Specialties.Any(z => z.SpecialtyID == specialtyID));
+            }
+            return query.Include(x=> x.Locations).ToList();
         }
     }
 }
