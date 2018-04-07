@@ -105,8 +105,6 @@ namespace TraumaNetwork.Migrations
 
                     b.Property<Guid>("AgencyID");
 
-                    b.Property<Guid>("CategoryID");
-
                     b.Property<string>("City");
 
                     b.Property<string>("State");
@@ -116,8 +114,6 @@ namespace TraumaNetwork.Migrations
                     b.HasKey("ID");
 
                     b.HasIndex("AgencyID");
-
-                    b.HasIndex("CategoryID");
 
                     b.ToTable("AgencyLocation");
                 });
@@ -254,11 +250,6 @@ namespace TraumaNetwork.Migrations
                     b.HasOne("TraumaNetwork.Agency", "Agency")
                         .WithMany("Locations")
                         .HasForeignKey("AgencyID")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("TraumaNetwork.Category", "Category")
-                        .WithMany("Locations")
-                        .HasForeignKey("CategoryID")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

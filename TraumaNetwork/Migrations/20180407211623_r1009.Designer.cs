@@ -11,8 +11,8 @@ using TraumaNetwork;
 namespace TraumaNetwork.Migrations
 {
     [DbContext(typeof(TraumaContext))]
-    [Migration("20180407202416_r1005")]
-    partial class r1005
+    [Migration("20180407211623_r1009")]
+    partial class r1009
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -106,8 +106,6 @@ namespace TraumaNetwork.Migrations
 
                     b.Property<Guid>("AgencyID");
 
-                    b.Property<Guid>("CategoryID");
-
                     b.Property<string>("City");
 
                     b.Property<string>("State");
@@ -117,8 +115,6 @@ namespace TraumaNetwork.Migrations
                     b.HasKey("ID");
 
                     b.HasIndex("AgencyID");
-
-                    b.HasIndex("CategoryID");
 
                     b.ToTable("AgencyLocation");
                 });
@@ -255,11 +251,6 @@ namespace TraumaNetwork.Migrations
                     b.HasOne("TraumaNetwork.Agency", "Agency")
                         .WithMany("Locations")
                         .HasForeignKey("AgencyID")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("TraumaNetwork.Category", "Category")
-                        .WithMany("Locations")
-                        .HasForeignKey("CategoryID")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

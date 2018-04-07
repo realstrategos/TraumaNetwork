@@ -77,7 +77,6 @@ namespace TraumaNetwork
         public int Order { get; set; }
 
         public List<AgencyCategory> Agencies { get; set; }
-        public List<AgencyLocation> Locations { get; set; }
     }
     public class AgeGroup : IFilterable
     {
@@ -181,9 +180,6 @@ namespace TraumaNetwork
 
         public Guid AgencyID { get; set; }
         public Agency Agency { get; set; }
-
-        public Guid CategoryID { get; set; }
-        public Category Category { get; set; }
     }
 
 

@@ -227,7 +227,8 @@ export class Home extends React.Component<RouteComponentProps<{}>, any> {
             </thead>
             <tbody>
             {results.map(agency =>
-                <tr key={ agency.name }>
+                <tr key={ agency.id }>
+                    <td>{ agency.name }</td>
                     <td>{ agency.phone }</td>
                     <td>{ agency.email }</td>
                     <td>{ agency.website }</td>

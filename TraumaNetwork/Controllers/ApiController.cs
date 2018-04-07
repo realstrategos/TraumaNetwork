@@ -96,7 +96,7 @@ namespace TraumaNetwork.Controllers
             {
                 query = query.Where(x => x.Specialties.Any(z => z.SpecialtyID == specialtyID));
             }
-            return query.Include(x => x.Locations).ToList();
+            return query.ToList();
         }
     }
 }
