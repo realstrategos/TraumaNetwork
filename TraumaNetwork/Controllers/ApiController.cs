@@ -18,9 +18,57 @@ namespace TraumaNetwork.Controllers
 
         [HttpGet]
         [Route("categories")]
-        public IEnumerable<Category> GetCategory()
+        public IEnumerable<Category> Categories()
         {
             return _context.Category;
+        }
+
+        [HttpGet]
+        [Route("services")]
+        public IEnumerable<Service> Services(Guid? categoryID = null)
+        {
+            var query = _context.Set<Service>().AsQueryable();
+            if (categoryID.HasValue)
+            {
+                query = query.Where(x => x.Agencies.Any(y => y.Agency.Categories.Any(z => z.CategoryID == categoryID)));
+            }
+            return query.ToList();
+        }
+
+        [HttpGet]
+        [Route("agegroups")]
+        public IEnumerable<AgeGroup> AgeGroup(Guid? categoryID = null)
+        {
+            var query = _context.Set<AgeGroup>().AsQueryable();
+            if (categoryID.HasValue)
+            {
+                query = query.Where(x => x.Agencies.Any(y => y.Agency.Categories.Any(z => z.CategoryID == categoryID)));
+            }
+            return query.ToList();
+        }
+
+        [HttpGet]
+        [Route("specialties")]
+        public IEnumerable<Specialty> Specialties(Guid? categoryID = null)
+        {
+            var query = _context.Set<Specialty>().AsQueryable();
+            if (categoryID.HasValue)
+            {
+                query = query.Where(x => x.Agencies.Any(y => y.Agency.Categories.Any(z => z.CategoryID == categoryID)));
+            }
+            return query.ToList();
+        }
+
+        [HttpGet]
+        [Route("financialplans")]
+        public IEnumerable<FinancialPlan> FinancialPlans(Guid? categoryID = null)
+        {
+            var query = _context.Set<FinancialPlan>().AsQueryable();
+            if (categoryID.HasValue)
+            {
+                query = query.Where(x => x.Agencies.Any(y => y.Agency.Categories.Any(z => z.CategoryID == categoryID)));
+            }
+            return query.ToList();
         }
     }
 }

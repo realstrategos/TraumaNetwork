@@ -74,6 +74,8 @@ namespace TraumaNetwork
         public Guid ID { get; set; }
         public string Name { get; set; }
         public int Order { get; set; }
+
+        public List<AgencyCategory> Agencies { get; set; }
     }
     public class AgeGroup : IFilterable
     {
@@ -81,6 +83,8 @@ namespace TraumaNetwork
         public Guid ID { get; set; }
         public string Name { get; set; }
         public int Order { get; set; }
+
+        public List<AgencyAgeGroup> Agencies { get; set; }
     }
     public class Service : IFilterable
     {
@@ -88,6 +92,8 @@ namespace TraumaNetwork
         public Guid ID { get; set; }
         public string Name { get; set; }
         public int Order { get; set; }
+
+        public List<AgencyService> Agencies { get; set; }
     }
     public class Specialty : IFilterable
     {
@@ -95,6 +101,8 @@ namespace TraumaNetwork
         public Guid ID { get; set; }
         public string Name { get; set; }
         public int Order { get; set; }
+
+        public List<AgencySpecialty> Agencies { get; set; }
     }
     public class FinancialPlan : IFilterable
     {
@@ -102,6 +110,8 @@ namespace TraumaNetwork
         public Guid ID { get; set; }
         public string Name { get; set; }
         public int Order { get; set; }
+
+        public List<AgencyFinancialPlan> Agencies { get; set; }
     }
 
     public class AgencySpecialty
