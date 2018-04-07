@@ -11,9 +11,10 @@ using TraumaNetwork;
 namespace TraumaNetwork.Migrations
 {
     [DbContext(typeof(TraumaContext))]
-    partial class TraumaContextModelSnapshot : ModelSnapshot
+    [Migration("20180407183242_r1003")]
+    partial class r1003
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

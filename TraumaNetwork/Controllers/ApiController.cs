@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace TraumaNetwork.Controllers
 {
-    [Route("api/[controller]")]
+    [Produces("application/json")]
+    [Route("api")]
     public class ApiController : Controller
     {
         private readonly TraumaContext _context;
