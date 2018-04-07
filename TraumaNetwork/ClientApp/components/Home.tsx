@@ -110,9 +110,9 @@ export class Home extends React.Component<RouteComponentProps<{}>, any> {
 
     renderWorkflowArrows(step: number) {
         if (step > 0) {
-            return <div>
-                <button onClick={() => this.setState({ step: step - 1 })}>Go Back</button>
-                {step === 1 ? <button onClick={() => this.executeSearch()}>Search</button> : null}
+            return <div style={{ marginTop: "1rem"}}>
+                <button className="btn" style={{ marginRight: "1rem", marginBottom: "1rem"}} onClick={() => this.setState({ step: step - 1 })}>Go Back</button>
+                {step === 1 ? <button className="btn" style={{ marginRight: "1rem", marginBottom: "1rem"}} onClick={() => this.executeSearch()}>Search</button> : null}
             </div>
         }
     }
@@ -143,7 +143,7 @@ export class Home extends React.Component<RouteComponentProps<{}>, any> {
 
     renderServiceList(categories: Orderable[]) {
         return <div>
-            {categories.map(x => <button key={x.id} onClick={() => {
+            {categories.map(x => <button className="btn" style={{ marginRight: "1rem", marginBottom: "1rem"}} key={x.id} onClick={() => {
                 this.setState({
                     filterInfo:
                         {
